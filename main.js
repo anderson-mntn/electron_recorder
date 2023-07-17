@@ -10,9 +10,9 @@ const isMac = process.platform === 'darwin' ? true : false ;
 
 function createWindow(){
     const win = new BrowserWindow({
-        width: isDev ? 900 : 500,
+        width: isDev ? 900 : 700,
         resizable: isWin32 ? true : false,
-        height: 300,
+        height: 600,
         backgroundColor: '#234',
         show: false,
         icon: path.join(__dirname, 'assets', 'icons', 'ak47.png'),
