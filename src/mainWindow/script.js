@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
         })
     })
 
+    micInput.addEventListener('change', (event)=>{
+        selectedDeviceId = event.target.value;
+        console.log(selectedDeviceId)
+    })
+
     // Functions
     
     function updateButtonTo(recording){
