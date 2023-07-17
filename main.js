@@ -3,17 +3,17 @@ const {app, BrowserWindow, ipcMain, Menu, globalShortcut} = require('electron');
 const path = require('path');
 const os = require('os');
 
-//const isDev = process.env.NODE_ENV === "development" ? true : false ;
+const isDev = process.env.NODE_ENV !== undefined && process.env.NODE_ENV === "development"  ? true : false ;
 
 const isWin32 = process.platform === 'win32' ? true : false ;
 const isMac = process.platform === 'darwin' ? true : false ;
 
 function createWindow(){
     const win = new BrowserWindow({
-        width: 500,
+        width: isDev ? 900 : 500,
+        resizable: isWin32 ? true : false,
         height: 300,
         backgroundColor: '#234',
-        color: '#fff',
         show: false,
         icon: path.join(__dirname, 'assets', 'icons', 'ak47.png'),
         webPreferences: { 
@@ -24,7 +24,7 @@ function createWindow(){
 
     win.loadFile('./src/index.html');
     
-    // isWin32 ? win.webContents.openDevTools() : console.log('not windows');
+    isWin32 ? win.webContents.openDevTools() : console.log('not windows');
 
     win.once('ready-to-show',()=>{
         win.show();
@@ -36,8 +36,16 @@ function createWindow(){
 
     // Read documentation to see all roles. 
     const menuTemplate =[
-        { role: 'appMenu' },
-        { role: 'fileMenu' },
+        { label: app.name, // por padrão ele vem com o nome, mas mesmo assim coloquei só pra saber.
+            submenu: [
+                {label: 'preferences', click: () => {}},
+                {label: 'Open destination folder', click: () => {}}
+            ]
+        },
+        { 
+            label: 'File',
+            submenu: [ isMac ? { role: 'close'} : { role: 'quit'} ]
+        },
         {
             label: 'Window',
             submenu: [
@@ -65,19 +73,8 @@ function createWindow(){
 }
 
 app.whenReady().then(()=>{
-    console.log('app ready!');
     createWindow();
-    console.log(os.cpus()[0].model) //nome do processador
-
-    //console.log(isDev)
-
-    globalShortcut.register('CmdOrCtrl+g',()=>{
-        BrowserWindow.getAllWindows()[0].setAlwaysOnTop(true) // Parece o modo picture to picture de videos
-    })
-    globalShortcut.register('CmdOrCtrl+h',()=>{
-        BrowserWindow.getAllWindows()[0].setAlwaysOnTop(false)
-    })
-})
+});
 
 app.on('will-quit',()=>{
     globalShortcut.unregisterAll()
