@@ -24,7 +24,7 @@ function createWindow(){
 
     win.loadFile('./src/mainWindow/index.html');
     
-    isWin32 ? win.webContents.openDevTools() : console.log('not windows');
+    isDev ? win.webContents.openDevTools() : console.log('not windows');
 
     win.once('ready-to-show',()=>{
         win.show();
