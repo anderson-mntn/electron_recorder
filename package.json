@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "ss": "NODE_ENV=development electron ."
+    "start_dev": "NODE_ENV=development electron ."
   },
   "author": "",
   "license": "ISC",

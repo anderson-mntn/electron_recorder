@@ -22,7 +22,7 @@ function createWindow(){
         },
     });
 
-    win.loadFile('./src/index.html');
+    win.loadFile('./src/mainWindow/index.html');
     
     isWin32 ? win.webContents.openDevTools() : console.log('not windows');
 
