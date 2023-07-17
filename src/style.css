@@ -9,7 +9,7 @@ body{
     color: #fff;
 }
 
-.container{
+#container{
     display: flex;
     padding: 12px;
     width: 100vw;
@@ -30,7 +30,7 @@ body{
 
 .display-container{
     padding: 8px 40px;
-    background-color: grey;
+    background-color: rgb(21, 39, 75);
     border-radius: 32px;
     width: 80%;
     flex-grow: 1;
@@ -57,6 +57,16 @@ body{
     background-color: red;
     content: " ";
     transform: translate(-50%, -50%);
+}
+
+.recording::after{
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 5px !important;
+}
+
+.hide{
+    opacity: 0 !important;
 }
 
 #mic-icon{
