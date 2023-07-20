@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // Declarations
     let isRecording = false
     let selectedDeviceId = null
+    let mediaRecorder = null
+    let chunks = []
 
     // Get available devices
     navigator.mediaDevices.enumerateDevices().then(devices => {
@@ -43,6 +45,41 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     }
 
+    record.addEventListener('click', () => {
+        updateButtonTo(!isRecording)
+        handleRecord(isRecording);
+
+        isRecording = !isRecording
+    })
+
+    function handleRecord(recording){
+        if(recording){
+            // stop
+            console.log('stop')
+            mediaRecorder.stop()
+        } else {
+            // start
+            console.log('start')
+            
+            navigator.mediaDevices.getUserMedia({audio:{deviceId: selectedDeviceId}, video : false}).then(stream=>{
+                mediaRecorder = new MediaRecorder(stream)
+                mediaRecorder.start()
+                mediaRecorder.ondataavailable = (event) =>{
+                    chunks.push(event.data);
+                }
+                mediaRecorder.onstop = (event) => {
+                    saveData()
+                }
+            })
+        } 
+    }
+
+    function saveData(){
+        let blob = new Blob(chunks, {"type": "audio/web ; codecs=opus"})
+        console.log(blob)
+        document.querySelector("#audio").src = URL.createObjectURL(blob)
+        chunks = []
+    }
 })
 
 window.onload = () =>{
