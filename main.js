@@ -15,7 +15,7 @@ function createPreferenceWindow(){
     const preferenceWindow = new BrowserWindow({
         width: isDev ? 900 : 500,
         resizable: isWin32 ? true : false,
-        height: 150,
+        height: 250,
         backgroundColor: '#234',
         show: false,
         icon: path.join(__dirname, 'assets', 'icons'),

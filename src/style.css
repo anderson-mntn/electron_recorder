@@ -9,7 +9,7 @@ body{
     color: #fff;
 }
 
-#container{
+.container{
     display: flex;
     padding: 12px;
     width: 100vw;
