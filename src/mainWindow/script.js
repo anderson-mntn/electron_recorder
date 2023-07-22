@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 
+    const {ipcRenderer } = require('electron')
+
     // Selectors
     const container = document.getElementById('container');
     const display = document.querySelector('#display')
@@ -80,7 +82,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     function saveData(){
         let blob = new Blob(chunks, {"type": "audio/web ; codecs=opus"})
         console.log(blob)
-        document.querySelector("#audio").src = URL.createObjectURL(blob)
+        //document.querySelector("#audio").src = URL.createObjectURL(blob)
+        
+        blob.arrayBuffer().then(blobBuffer =>{
+            const buffer = new Buffer(blobBuffer, 'binary')
+            ipcRenderer.send('save_buffer', buffer)
+        })
+
         chunks = []
     }
 

@@ -1,7 +1,9 @@
-const {app, BrowserWindow, ipcMain, Menu, globalShortcut} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu, globalShortcut, shell} = require('electron');
 //require('dotenv').config()
 const path = require('path');
 const os = require('os');
+const fs = require('fs')
+let destination = path.join(os.homedir(), 'audios')
 
 const isDev = process.env.NODE_ENV !== undefined && process.env.NODE_ENV === "development"  ? true : false ;
 
@@ -15,9 +17,9 @@ function createWindow(){
         height: 600,
         backgroundColor: '#234',
         show: false,
-        icon: path.join(__dirname, 'assets', 'icons', 'ak47.png'),
+        icon: path.join(__dirname, 'assets', 'icons'),
         webPreferences: { 
-            nodeIntegration: true,
+            nodeIntegration: true, //permite usar ipcRenderer em script.js
             contextIsolation: false,
         },
     });
@@ -39,7 +41,7 @@ function createWindow(){
         { label: app.name, // por padrão ele vem com o nome, mas mesmo assim coloquei só pra saber.
             submenu: [
                 {label: 'preferences', click: () => {}},
-                {label: 'Open destination folder', click: () => {}}
+                {label: 'Open destination folder', click: () => {shell.openPath(destination)}}
             ]
         },
         { 
@@ -93,4 +95,9 @@ app.on('will-quit',()=>{
 
 ipcMain.on('open_new_window', ()=>{
     createWindow();
+})
+
+ipcMain.on('save_buffer', (e, buffer)=>{
+    const filePath = path.join(destination, `${Date.now()}`)
+    fs.writeFileSync(`${filePath}.webm`, buffer) // buffer é o que vai ser colocar no file
 })
