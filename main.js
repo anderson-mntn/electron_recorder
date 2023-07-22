@@ -2,13 +2,38 @@ const {app, BrowserWindow, ipcMain, Menu, globalShortcut, shell} = require('elec
 //require('dotenv').config()
 const path = require('path');
 const os = require('os');
-const fs = require('fs')
+const fs = require('fs');
+const { create } = require('domain');
 let destination = path.join(os.homedir(), 'audios')
 
 const isDev = process.env.NODE_ENV !== undefined && process.env.NODE_ENV === "development"  ? true : false ;
 
 const isWin32 = process.platform === 'win32' ? true : false ;
 const isMac = process.platform === 'darwin' ? true : false ;
+
+function createPreferenceWindow(){
+    const preferenceWindow = new BrowserWindow({
+        width: isDev ? 900 : 500,
+        resizable: isWin32 ? true : false,
+        height: 150,
+        backgroundColor: '#234',
+        show: false,
+        icon: path.join(__dirname, 'assets', 'icons'),
+        webPreferences: { 
+            nodeIntegration: true, //permite usar ipcRenderer em script.js
+            contextIsolation: false,
+        },
+    });
+
+    preferenceWindow.loadFile('./src/preferences/index.html')
+
+    preferenceWindow.once('ready-to-show', ()=>{
+        preferenceWindow.show()
+        if(isDev){
+            preferenceWindow.webContents.openDevTools();
+        }
+    })
+}
 
 function createWindow(){
     const win = new BrowserWindow({
@@ -40,7 +65,7 @@ function createWindow(){
     const menuTemplate =[
         { label: app.name, // por padrão ele vem com o nome, mas mesmo assim coloquei só pra saber.
             submenu: [
-                {label: 'preferences', click: () => {}},
+                {label: 'preferences', click: () => { createPreferenceWindow()}},
                 {label: 'Open destination folder', click: () => {shell.openPath(destination)}}
             ]
         },
