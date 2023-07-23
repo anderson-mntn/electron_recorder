@@ -3,9 +3,15 @@ const {app, BrowserWindow, ipcMain, Menu, globalShortcut, shell, dialog} = requi
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
-const { create } = require('domain');
-const { INSPECT_MAX_BYTES } = require('buffer');
-let destination = path.join(os.homedir(), 'audios')
+
+const Store = require('./Store')
+const preferences = new Store({
+    configName: 'user-preferences',
+    defaults:{
+        destination: path.join(os.homedir(), 'audios')
+    }
+})
+let destination = preferences.get('destination')
 
 const isDev = process.env.NODE_ENV !== undefined && process.env.NODE_ENV === "development"  ? true : false ;
 
@@ -133,6 +139,9 @@ ipcMain.on('save_buffer', (e, buffer)=>{
 ipcMain.handle('show-dialog', async(event)=>{
     const result = await dialog.showOpenDialog({properties:['openDirectory']});
     const dirPath = result.filePaths[0];
-    destination = dirPath;
+
+    preferences.set('destination', dirPath)
+    destination = preferences.get('destination');
+    
     return destination;
 })
