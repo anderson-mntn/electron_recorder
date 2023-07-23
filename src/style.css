@@ -85,3 +85,18 @@ body{
 .preload *{
     transition: none !important;
 }
+
+.group{
+    flex: row;
+}
+
+.preferences-group{
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    width: 100%;
+}
+
+.preferences-group>input, .group>select{
+    flex-grow: 1;
+}

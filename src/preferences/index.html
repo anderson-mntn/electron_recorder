@@ -8,12 +8,26 @@
 </head>
 <body>
     <div class="preferences container">
-        <div class="group dflex-ja">
+        <div class="group dflex-ja preferences-group">
             <label for="destination-path">Destination path:</label>
             <input id="destination-path" name="destination-path" type="text">
-            <button onclick="">Choose</button>
+            <button onclick="choosePathDest()">Choose</button>
         </div>
     </div>
+
+    <script>
+        const {ipcRenderer } = require('electron');
+        const destPath = document.querySelector('#destination-path');
+        ipcRenderer.on('dest-path-update', (event, destination)=>{
+            destPath.value = destination;
+        })
+
+        function choosePathDest(){
+            ipcRenderer.invoke('show-dialog').then(destination=>{
+                destPath.value = destination;
+            })
+        }
+    </script>
 
 </body>
 </html>

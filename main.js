@@ -1,9 +1,10 @@
-const {app, BrowserWindow, ipcMain, Menu, globalShortcut, shell} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu, globalShortcut, shell, dialog} = require('electron');
 //require('dotenv').config()
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const { create } = require('domain');
+const { INSPECT_MAX_BYTES } = require('buffer');
 let destination = path.join(os.homedir(), 'audios')
 
 const isDev = process.env.NODE_ENV !== undefined && process.env.NODE_ENV === "development"  ? true : false ;
@@ -13,9 +14,10 @@ const isMac = process.platform === 'darwin' ? true : false ;
 
 function createPreferenceWindow(){
     const preferenceWindow = new BrowserWindow({
-        width: isDev ? 900 : 500,
+        // width: isDev ? 500 : 500,
+        width : 500,
         resizable: isWin32 ? true : false,
-        height: 250,
+        height: 200,
         backgroundColor: '#234',
         show: false,
         icon: path.join(__dirname, 'assets', 'icons'),
@@ -29,15 +31,16 @@ function createPreferenceWindow(){
 
     preferenceWindow.once('ready-to-show', ()=>{
         preferenceWindow.show()
-        if(isDev){
-            preferenceWindow.webContents.openDevTools();
-        }
+        // if(isDev){
+        //     preferenceWindow.webContents.openDevTools();
+        // }
+        preferenceWindow.webContents.send('dest-path-update', destination)
     })
 }
 
 function createWindow(){
     const win = new BrowserWindow({
-        width: isDev ? 900 : 700,
+        width: isDev ? 1000 : 700,
         resizable: isWin32 ? true : false,
         height: 600,
         backgroundColor: '#234',
@@ -125,4 +128,11 @@ ipcMain.on('open_new_window', ()=>{
 ipcMain.on('save_buffer', (e, buffer)=>{
     const filePath = path.join(destination, `${Date.now()}`)
     fs.writeFileSync(`${filePath}.webm`, buffer) // buffer é o que vai ser colocar no file
+})
+
+ipcMain.handle('show-dialog', async(event)=>{
+    const result = await dialog.showOpenDialog({properties:['openDirectory']});
+    const dirPath = result.filePaths[0];
+    destination = dirPath;
+    return destination;
 })
