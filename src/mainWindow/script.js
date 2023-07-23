@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const {ipcRenderer } = require('electron')
 
     // Selectors
-    const container = document.getElementById('container');
+    const container = document.querySelector('.container');
     const display = document.querySelector('#display')
     const record = document.querySelector('#record')
     const micInput = document.querySelector('#mic')
